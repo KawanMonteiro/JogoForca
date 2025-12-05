@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="JogoForca">
+    <output-path>$PROJECT_DIR$/out/artifacts/JogoForca</output-path>
+    <root id="root">
+      <element id="archive" name="JogoForca.jar">
+        <element id="module-output" name="JogoForca" />
+      </element>
+    </root>
+  </artifact>
+</component>
