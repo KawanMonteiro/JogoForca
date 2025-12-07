@@ -1,14 +1,24 @@
 package com.jogoforca;
 
+import com.jogoforca.model.Computador;
 import com.jogoforca.model.Jogada;
 import com.jogoforca.model.Palavra;
+import javafx.animation.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,20 +27,37 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public class JogoController {
 
-    // Dados do FXML
+    private final Random random = new Random();
+
+    // FXML do jogo
     @FXML private ImageView imgForca;
+    @FXML private ImageView imgBase;
     @FXML private Label txtRodada;
     @FXML private Label txtPalavra;
+    @FXML private Label txtCategoria;
+    @FXML private Label txtLetrasUsadas;
     @FXML private Label txtDica;
     @FXML private Label txtPontosJ1;
     @FXML private Label txtPontosJ2;
     @FXML private Label txtFimDoJogo;
+    @FXML private Button btnDica;
+    @FXML private BorderPane ctnJogo;
     @FXML private FlowPane painelTeclado;
-    @FXML private AnchorPane containerFimDeRodada;
+    @FXML private AnchorPane ctnFimDeRodada;
+
+    // FXML do fim do jogo
+    @FXML private Label txtVencedor;
+    @FXML private Label txtFinalJ1;
+    @FXML private Label txtFinalJ2;
+    @FXML private Label txtPontosFinaisJ1;
+    @FXML private Label txtPontosFinaisJ2;
+    @FXML private AnchorPane ctnFimDeJogo;
 
     // Dados do jogo
+    private Computador comp;
     private boolean modoContraComputador;
     private String nomeJogador1;
     private String nomeJogador2;
@@ -39,15 +66,119 @@ public class JogoController {
     private String vezJogador = "";
     private int pontosJ1 = 0;
     private int pontosJ2 = 0;
-    private Jogada jogada;
     private int errosAtuais;
-    private List<String> palavras = new ArrayList<>();
+    private int qtdDicas;
+    private Jogada jogada;
+    private final List<String> palavras = new ArrayList<>();
 
-
-    @FXML public void initialize() {}
 
     @FXML public void onReiniciarJogo() {
         rodada();
+    }
+
+    @FXML public void onTerminarJogo() {
+
+        if (pontosJ1 > pontosJ2) {
+            txtVencedor.setText(nomeJogador1 + " Venceu!");
+        } else if (pontosJ2 > pontosJ1) {
+            txtVencedor.setText(nomeJogador2 + " Venceu!");
+        } else {
+            txtVencedor.setText("Empate");
+        }
+
+        txtFinalJ1.setText(nomeJogador1);
+        txtFinalJ2.setText(nomeJogador2);
+        txtPontosFinaisJ1.setText((pontosJ1 + " Pontos"));
+        txtPontosFinaisJ2.setText((pontosJ2 + " Pontos"));
+
+        // Animação
+        ctnFimDeJogo.setVisible(true);
+        ctnFimDeJogo.setTranslateX(800);
+
+        TranslateTransition entrada = new TranslateTransition(Duration.millis(375), ctnFimDeJogo);
+        entrada.setToX(0);
+        TranslateTransition saida = new TranslateTransition(Duration.millis(375), ctnJogo);
+        saida.setToX(-800);
+
+        ParallelTransition animacao = new ParallelTransition(entrada, saida);
+        animacao.play();
+    }
+
+    @FXML public void onVoltarMenu(javafx.event.ActionEvent event) {
+        // Deixa a tela do jogo invisível
+        ctnJogo.setVisible(false);
+        try {
+            // Carrega o arquivo do menu
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("menu.fxml"));
+            Parent raizMenu = fxmlLoader.load();
+
+            // Carrega o menu na esquerda
+            raizMenu.setTranslateX(-800);
+
+            TranslateTransition saidaJogo = animarTrocaCena(event, raizMenu);
+
+            saidaJogo.play();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private TranslateTransition animarTrocaCena(ActionEvent event, Parent raizMenu) {
+        // Pega a tela inteira do menu
+        Node noAtual = (Node) event.getSource();
+        Scene cenaAtual = noAtual.getScene();
+        Parent raizJogo = noAtual.getScene().getRoot();
+
+        // Configura a animação
+        TranslateTransition saidaMenu = new TranslateTransition(Duration.millis(250), raizJogo);
+        saidaMenu.setToX(800);
+        // Troca a cena quando terminar a saida do menu
+        saidaMenu.setOnFinished(_ -> {
+            cenaAtual.setRoot(raizMenu);
+
+            // Animação de entrada da tela do jogo
+            TranslateTransition entradaJogo = new TranslateTransition(Duration.millis(250), raizMenu);
+            entradaJogo.setToX(0);
+            entradaJogo.play();
+        });
+        return saidaMenu;
+    }
+
+    @FXML public void onFecharJogo() {
+        javafx.application.Platform.exit();
+    }
+
+    @FXML public void onDica() {
+        ArrayList<Character> letrasRestantes = jogada.getLetrasRestantes();
+        // Verifica se falta mais de 1 letra para dar a dica
+        if (letrasRestantes.size() <= 1) {
+            btnDica.setDisable(true);
+        }
+
+        // Escolhe uma letra aleatória da palavra para mostrar
+        char letraEscolhida = letrasRestantes.get(random.nextInt(jogada.getLetrasRestantes().size()));
+
+        // Procura o botão que corresponde a letra e "clica" nele
+        for (Node node: painelTeclado.getChildren()) {
+            if (node instanceof Button btn) {
+                if (btn.getText().equals(String.valueOf(letraEscolhida))) {
+                    btn.fire();
+                    break;
+                }
+            }
+        }
+
+        // Aumenta o erro como penalidade e diminui a quantidade de dicas
+        jogada.aumentarErros();
+        atualizarForca();
+        qtdDicas--;
+        txtDica.setText("Número de Dicas: " +  qtdDicas);
+
+        // Desativa o botão se acabar as dicas ou se tem apenas 1 letra restante
+        if (qtdDicas <= 0 || letrasRestantes.size() <= 1) {
+            btnDica.setDisable(true);
+        }
     }
 
     // Recebe os nomes dos jogadores do MenuController
@@ -58,7 +189,8 @@ public class JogoController {
         if (j2 == null) {
             this.nomeJogador2 = "COMP";
             this.modoContraComputador = true;
-            this.dificuldade = dificuldade;
+            this.dificuldade = dificuldade.trim().toUpperCase();
+            this.comp = new Computador(this.dificuldade);
         } else {
             this.nomeJogador2 = j2.trim().toUpperCase();
             this.modoContraComputador = false;
@@ -66,16 +198,105 @@ public class JogoController {
         rodada();
     }
 
+    // Prepara o jogo para cada rodada
+    public void rodada() {
+        carregarPalavras();
+
+        try {
+            jogada = new Jogada(sortearPalavra());
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        if (modoContraComputador) {
+            switch (dificuldade) {
+                case "FÁCIL":
+                    qtdDicas = 3;
+                    btnDica.setDisable(false);
+                    break;
+                case "NORMAL":
+                    qtdDicas = 1;
+                    btnDica.setDisable(false);
+                    break;
+                case "DIFÍCIL":
+                    qtdDicas = 0;
+                    btnDica.setDisable(true);
+                    btnDica.setVisible(false);
+                    txtDica.setVisible(false);
+            }
+        } else {
+            qtdDicas = 1;
+            btnDica.setDisable(false);
+        }
+
+        if (vezJogador.equals(nomeJogador2) || vezJogador.isEmpty()) {
+            vezJogador = nomeJogador1;
+
+            if (modoContraComputador) {
+                painelTeclado.setDisable(false);
+            }
+        } else {
+            vezJogador = nomeJogador2;
+
+            if (modoContraComputador) {
+                jogadaComputador();
+            }
+        }
+
+        ctnFimDeRodada.setVisible(false);
+        txtFimDoJogo.setVisible(false);
+
+        txtLetrasUsadas.setText("");
+        txtDica.setText("Número de Dicas: " +  qtdDicas);
+        txtPontosJ1.setText(nomeJogador1 + ": " + pontosJ1);
+        txtPontosJ2.setText(nomeJogador2 + ": " + pontosJ2);
+        txtRodada.setText("Vez de " + vezJogador);
+
+        errosAtuais = jogada.getErros();
+        txtCategoria.setText(jogada.getPalavra().getCategoria());
+        txtPalavra.setText(jogada.getPalavraOculta());
+        atualizarForca();
+        criarTeclado();
+    }
+
     // Atualiza a imagem da forca conforme os erros
     private void atualizarForca() {
         try {
             // Busca o nome da imagem correspondente ao número de erros
             String nomeImagem = "/img/forca" + errosAtuais + ".png";
-
             // Irá procurar pela imagem no resource da classe atual
-            InputStream img = JogoController.class.getResourceAsStream(nomeImagem);
-            if (img != null) {
-                imgForca.setImage(new Image(img));
+            InputStream imgStream = JogoController.class.getResourceAsStream(nomeImagem);
+
+            if (imgStream != null) {
+                Image imagem = new Image(imgStream);
+
+                if (errosAtuais == 0) {
+                    imgBase.setImage(null);
+                    imgForca.setImage(imagem);
+                    imgForca.setClip(null);
+                } else {
+                    imgBase.setImage(imgForca.getImage());
+                    imgForca.setImage(imagem);
+
+                    // Animação
+                    Rectangle quadro = new Rectangle(0, 0);
+                    imgForca.setClip(quadro);
+
+                    Timeline animacaoDesenho = new Timeline(
+                            new KeyFrame(Duration.ZERO,
+                                    new KeyValue(quadro.widthProperty(), 0),
+                                    new KeyValue(quadro.heightProperty(), 0)
+                            ),
+                            new KeyFrame(Duration.millis(375),
+                                    new KeyValue(quadro.widthProperty(), 250),
+                                    new KeyValue(quadro.heightProperty(), 250)
+                            )
+                    );
+
+                    animacaoDesenho.play();
+                }
+
             } else {
                 System.out.println("Imagem não encontrada: " + nomeImagem);
             }
@@ -89,7 +310,7 @@ public class JogoController {
         // Apaga o teclado da rodada anterior
         painelTeclado.getChildren().clear();
         painelTeclado.setVisible(true);
-        // Loop para criar todas as letras
+        // “Loop” para criar todas as letras
         for (char letra = 'A'; letra<= 'Z'; letra++) {
             Button btn = new Button(String.valueOf(letra));
             btn.setPrefWidth(50);
@@ -107,11 +328,31 @@ public class JogoController {
             );
 
             // Função lambda para quando o botão for clicado
-            btn.setOnAction(event -> {
+            btn.setOnAction(_ -> {
                 btn.setDisable(true);
                 boolean acertou = jogada.tentarLetra((btn.getText().charAt(0)));
+
+                // Atualiza o texta que mostra as letras que já foram jogadas
+                if (jogada.getLetrasUsadas().size() == 1) {
+                    txtLetrasUsadas.setText(btn.getText());
+                } else {
+                    txtLetrasUsadas.setText(txtLetrasUsadas.getText() + "-" + btn.getText());
+                }
+
                 if (acertou) {
                     txtPalavra.setText(jogada.getPalavraOculta());
+                    jogada.removerLetra(btn.getText().charAt(0));
+
+                    // Desativa o botão de dica se sobrar apenas 1 letra para adivinhar
+                    if (jogada.getLetrasRestantes().size() <= 1) {
+                        btnDica.setDisable(true);
+                        txtDica.setText("Número de Dicas: 0");
+                    }
+
+                    // Desativa o teclado de novo para o jogador não jogar na vez do COMP
+                    if (modoContraComputador && vezJogador.equals(nomeJogador2)) {
+                        painelTeclado.setDisable(true);
+                    }
 
                     // Atualiza a pontuação
                     if (jogada.vitoria()) {
@@ -123,11 +364,13 @@ public class JogoController {
                             txtPontosJ2.setText((nomeJogador2 + ": " + pontosJ2));
                         }
                         // Mostra a mensagem de vitória
-                        txtFimDoJogo.setText(vezJogador + " venceu!");
+                        txtFimDoJogo.setText(vezJogador + " acertou!");
                         txtFimDoJogo.setVisible(true);
                         // Troca o teclado pelos botões para o fim de rodada
                         painelTeclado.setVisible(false);
-                        containerFimDeRodada.setVisible(true);
+                        ctnFimDeRodada.setVisible(true);
+                    } else if (modoContraComputador && vezJogador.equals(nomeJogador2)) {
+                        jogadaComputador();
                     }
                 } else {
                     errosAtuais = jogada.getErros();
@@ -139,14 +382,25 @@ public class JogoController {
                         // Mostra a palavra
                         txtPalavra.setText(jogada.getPalavra().getPalavra());
 
+                        btnDica.setDisable(true);
                         painelTeclado.setVisible(false);
-                        containerFimDeRodada.setVisible(true);
+                        ctnFimDeRodada.setVisible(true);
                     }
                     // Muda a vez dos jogadores
                     if (vezJogador.equals(nomeJogador1)) {
                         vezJogador = nomeJogador2;
+
+                        // Manda o computador jogar na vez dele
+                        if (modoContraComputador && !jogada.derrota()) {
+                            jogadaComputador();
+                        }
                     } else {
                         vezJogador = nomeJogador1;
+
+                        // Desbloqueia o teclado caso o computador tenha errado
+                        if (modoContraComputador) {
+                            painelTeclado.setDisable(false);
+                        }
                     }
                     txtRodada.setText("Vez de " + vezJogador);
                 }
@@ -157,39 +411,12 @@ public class JogoController {
         }
     }
 
-    public void rodada() {
-        carregarPalavras();
-        try {
-            jogada = new Jogada(sortearPalavra());
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return;
-        }
-        if (vezJogador.equals(nomeJogador2) || vezJogador.isEmpty()) {
-            vezJogador = nomeJogador1;
-        } else {
-            vezJogador = nomeJogador2;
-        }
-        containerFimDeRodada.setVisible(false);
-        txtFimDoJogo.setVisible(false);
-
-        txtPontosJ1.setText(nomeJogador1 + ": " + pontosJ1);
-        txtPontosJ2.setText(nomeJogador2 + ": " + pontosJ2);
-        txtRodada.setText("Vez de " + vezJogador);
-
-        errosAtuais = jogada.getErros();
-        txtDica.setText(jogada.getPalavra().getCategoria());
-        txtPalavra.setText(jogada.getPalavraOculta());
-        atualizarForca();
-        criarTeclado();
-    }
-
     public void carregarPalavras() {
         if (!palavras.isEmpty()) {
             return;
         }
         try {
-            // Procura o aquivo que contém as palavras
+            // Procura o arquivo que contém as palavras
             InputStream is = getClass().getResourceAsStream("/dados/palavras.txt");
             if (is == null) {
                 System.out.println("Arquivo não encontrado");
@@ -214,6 +441,11 @@ public class JogoController {
                 }
             }
             sc.close();
+
+
+            if (palavras.isEmpty()) {
+                throw new IllegalArgumentException("Não há palavras para a categoria escolhida!");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -221,8 +453,8 @@ public class JogoController {
 
     public Palavra sortearPalavra() {
         // Sorteia uma linha conforme o tamanho da lista de palavras
-        Random random = new Random();
         String linha = palavras.get(random.nextInt(palavras.size()));
+
         // Cria a palavra com a classe Palavra
         String[] palavraCategoria = linha.split(";");
         if (palavraCategoria.length == 2) {
@@ -230,5 +462,30 @@ public class JogoController {
         } else {
             throw new IllegalArgumentException("Arquivo 'palavras.txt' mal formatado!");
         }
+    }
+
+    private void jogadaComputador() {
+        // Bloqueia o teclado para o jogador não jogar
+        painelTeclado.setDisable(true);
+
+        // Espera 2 segundos para não ser instantâneo
+        PauseTransition pausa = new PauseTransition(Duration.seconds(2));
+        pausa.setOnFinished(_ -> {
+            // Computador escolhe a letra
+            char letra = comp.escolherLetra(jogada.getLetrasUsadas(), jogada.getLetrasRestantes());
+            letra = jogada.verificarAcento(letra);
+            // Clica no botão da letra escolhida
+            for (Node node : painelTeclado.getChildren()) {
+                if (node instanceof Button btn) {
+                    if (btn.getText().equals(String.valueOf(letra))) {
+                        painelTeclado.setDisable(false);
+                        btn.fire();
+                        break;
+                    }
+                }
+            }
+        });
+
+        pausa.play();
     }
 }

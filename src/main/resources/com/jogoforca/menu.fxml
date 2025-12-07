@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #145924;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jogoforca.MenuController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #145924;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jogoforca.MenuController">
    <children>
-      <Pane prefHeight="144.0" prefWidth="652.0">
+      <Pane prefHeight="125.0" prefWidth="800.0">
          <children>
             <Label alignment="CENTER" layoutX="147.0" prefHeight="92.0" prefWidth="507.0" text="Jogo da Forca" textAlignment="CENTER" textFill="WHITE">
                <font>
@@ -22,9 +22,9 @@
             </Label>
          </children>
       </Pane>
-      <StackPane prefHeight="461.0" prefWidth="800.0" stylesheets="@../../css/estilo.css">
+      <StackPane prefHeight="475.0" prefWidth="800.0" minHeight="475.0" minWidth="800.0" maxHeight="475.0" maxWidth="800.0" stylesheets="@../../css/estilo.css">
          <children>
-            <HBox fx:id="containerMenuInicial" alignment="CENTER" prefHeight="100.0" prefWidth="800.0" spacing="100.0">
+            <HBox fx:id="ctnMenuInicial" alignment="CENTER" prefHeight="475.0" prefWidth="800.0" spacing="100.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#onClicarUmJogador" prefWidth="300.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-radius: 25; -fx-border-width: 3;" text="1 Jogador" textFill="WHITE">
                      <font>
@@ -42,7 +42,7 @@
                   <Insets bottom="50.0" />
                </padding>
             </HBox>
-            <VBox fx:id="containerCadastroDoisJogadores" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" visible="false" StackPane.alignment="CENTER">
+            <VBox fx:id="ctnCadastroDoisJogadores" alignment="CENTER" prefHeight="475.0" prefWidth="800.0" spacing="20.0" visible="false" StackPane.alignment="CENTER">
                <children>
                   <Label fx:id="txtAviso" text="Digite um nome para cada jogador!" textAlignment="CENTER" textFill="#ffa000" visible="false">
                      <VBox.margin>
@@ -68,7 +68,10 @@
                         <Insets left="200.0" right="200.0" />
                      </VBox.margin>
                   </TextField>
-                  <ComboBox fx:id="cbCategorias" prefWidth="400.0" promptText="Categoria" />
+                  <ComboBox fx:id="cbCategorias" prefWidth="400.0" promptText="Categoria">
+                     <VBox.margin>
+                        <Insets bottom="60.0" />
+                     </VBox.margin></ComboBox>
                   <HBox alignment="CENTER" fillHeight="false" prefHeight="80.0" prefWidth="800.0" spacing="575.0">
                      <children>
                         <Button alignment="CENTER" mnemonicParsing="false" onAction="#onVoltarMenu" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Voltar" textAlignment="CENTER" textFill="WHITE">
@@ -80,10 +83,13 @@
                            <font>
                               <Font name="Segoe Print Bold" size="18.0" />
                            </font>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
                         </Button>
                      </children>
                      <VBox.margin>
-                        <Insets top="71.0" />
+                        <Insets bottom="15.0" top="71.0" />
                      </VBox.margin>
                   </HBox>
                </children>
@@ -91,7 +97,7 @@
                   <Insets />
                </StackPane.margin>
             </VBox>
-            <VBox fx:id="containerCadastroUmJogador" alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" spacing="20.0" visible="false">
+            <VBox fx:id="ctnCadastroUmJogador" alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="475.0" prefWidth="800.0" spacing="20.0" visible="false">
                <children>
                   <Label fx:id="txtAvisoComp" text="Digite um nome para o jogador!" textAlignment="CENTER" textFill="#ffa000" visible="false">
                      <font>
@@ -114,6 +120,9 @@
                         <ComboBox fx:id="cbCategoriasComp" prefWidth="190.0" promptText="Categoria" />
                         <ComboBox fx:id="cbDificuldade" prefWidth="190.0" promptText="Dificuldade" />
                      </children>
+                     <VBox.margin>
+                        <Insets bottom="60.0" />
+                     </VBox.margin>
                   </HBox>
                   <HBox alignment="CENTER" fillHeight="false" prefHeight="80.0" prefWidth="800.0" spacing="575.0" VBox.vgrow="NEVER">
                      <children>
@@ -129,7 +138,7 @@
                         </Button>
                      </children>
                      <VBox.margin>
-                        <Insets top="150.0" />
+                        <Insets bottom="15.0" top="150.0" />
                      </VBox.margin>
                   </HBox>
                </children>

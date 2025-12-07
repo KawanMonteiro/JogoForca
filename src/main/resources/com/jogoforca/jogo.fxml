@@ -7,102 +7,190 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #145924;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jogoforca.JogoController">
-   <left>
-      <ImageView fx:id="imgForca" fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets left="15.0" />
-         </BorderPane.margin></ImageView>
-   </left>
-   <bottom>
-      <AnchorPane BorderPane.alignment="CENTER">
-         <children>
-            <FlowPane fx:id="painelTeclado" hgap="10.0" prefHeight="130.0" prefWidth="800.0" vgap="10.0">
-               <padding>
+<StackPane style="-fx-background-color: #145924;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jogoforca.JogoController">
+   <children>
+      <BorderPane fx:id="ctnJogo" maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #145924;">
+         <left>
+            <StackPane maxHeight="424.0" maxWidth="250.0" minHeight="424.0" minWidth="250.0" prefHeight="424.0" prefWidth="250.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
                   <Insets left="15.0" />
-               </padding>
-            </FlowPane>
-            <AnchorPane fx:id="containerFimDeRodada" layoutX="140.0" layoutY="33.0" visible="false">
+               </BorderPane.margin>
                <children>
-                  <Button mnemonicParsing="false" onAction="#onReiniciarJogo" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Jogar Novamente" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <ImageView fx:id="imgBase" fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="imgForca" fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </StackPane>
+         </left>
+         <bottom>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+                  <FlowPane fx:id="painelTeclado" hgap="10.0" prefHeight="130.0" prefWidth="800.0" vgap="10.0">
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </FlowPane>
+                  <AnchorPane fx:id="ctnFimDeRodada" layoutX="140.0" layoutY="33.0" visible="false">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onReiniciarJogo" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Próxima Rodada" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                           <font>
+                              <Font name="Segoe Print Bold" size="20.0" />
+                           </font>
+                        </Button>
+                        <Button layoutX="300.0" mnemonicParsing="false" onAction="#onTerminarJogo" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Terminar Jogo" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                           <font>
+                              <Font name="Segoe Print Bold" size="20.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </bottom>
+         <center>
+            <VBox alignment="BOTTOM_LEFT" maxHeight="424.0" maxWidth="335.0" minHeight="424.0" minWidth="325.0" prefHeight="424.0" prefWidth="325.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label fx:id="txtLetrasUsadas" alignment="TOP_LEFT" prefHeight="60.0" prefWidth="346.0" textFill="WHITE" wrapText="true">
+                     <VBox.margin>
+                        <Insets bottom="74.0" />
+                     </VBox.margin>
                      <font>
-                        <Font name="Segoe Print Bold" size="20.0" />
+                        <Font name="Segoe Print Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="txtFimDoJogo" alignment="CENTER" prefHeight="57.0" prefWidth="300.0" text="Jogador Venceu!" textAlignment="CENTER" textFill="#ffaa00" visible="false" wrapText="true">
+                     <font>
+                        <Font name="Segoe Print Bold" size="32.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="50.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label fx:id="txtPalavra" text="_ _ _ _ _ _  _ _ _ _ _ _ " textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="Segoe Print Bold" size="26.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="80.0" />
+                     </VBox.margin>
+                  </Label>
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+            </VBox>
+         </center>
+         <right>
+            <VBox alignment="CENTER_LEFT" prefHeight="424.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="btnDica" mnemonicParsing="false" onAction="#onDica" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: transparent; -fx-background-radius: 30; -fx-border-color: white; -fx-border-radius: 30; -fx-border-width: 3;" text="D" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe Print Bold" size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="75.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Label fx:id="txtDica" text="Número de Dicas: 0" textFill="WHITE">
+                     <padding>
+                        <Insets bottom="80.0" />
+                     </padding>
+                     <font>
+                        <Font name="Segoe Print Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="txtPontosJ1" text="J1: 0" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="Segoe Print Bold" size="18.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </Label>
+                  <Label fx:id="txtPontosJ2" text="J2: 0" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="Segoe Print Bold" size="18.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="150.0" />
+                     </padding>
+                  </Label>
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+            </VBox>
+         </right>
+         <top>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+                  <Label fx:id="txtRodada" layoutX="14.0" text="Vez de Jogador 1" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe Print Bold" size="25.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="txtCategoria" layoutX="400.0" text="Categoria" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe Print Bold" size="25.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </top>
+      </BorderPane>
+      <AnchorPane fx:id="ctnFimDeJogo" maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #145924;" visible="false">
+         <children>
+            <Label fx:id="txtVencedor" alignment="CENTER" contentDisplay="CENTER" layoutX="1.0" layoutY="29.0" prefHeight="89.0" prefWidth="800.0" text="Vencedor" textAlignment="CENTER" textFill="#ffaa00" AnchorPane.topAnchor="30.0">
+               <font>
+                  <Font name="Segoe Print Bold" size="50.0" />
+               </font>
+            </Label>
+            <VBox alignment="TOP_CENTER" layoutX="170.0" layoutY="185.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="185.0">
+               <children>
+                  <Label fx:id="txtFinalJ1" text="J1" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="Segoe Print Bold" size="30.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="txtPontosFinaisJ1" text="0" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe Print Bold" size="30.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" layoutX="559.0" layoutY="185.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="185.0">
+               <children>
+                  <Label fx:id="txtFinalJ2" text="J2" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="Segoe Print Bold" size="30.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="txtPontosFinaisJ2" text="0" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe Print Bold" size="30.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <AnchorPane fx:id="containerFimDeRodada1" layoutX="140.0" layoutY="504.0" AnchorPane.bottomAnchor="32.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onVoltarMenu" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Menu" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="Segoe Print Bold" size="24.0" />
                      </font>
                   </Button>
-                  <Button layoutX="300.0" mnemonicParsing="false" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Fim de Jogo" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Button layoutX="300.0" mnemonicParsing="false" onAction="#onFecharJogo" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Fechar Jogo" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
-                        <Font name="Segoe Print Bold" size="20.0" />
+                        <Font name="Segoe Print Bold" size="24.0" />
                      </font>
                   </Button>
                </children>
             </AnchorPane>
          </children>
       </AnchorPane>
-   </bottom>
-   <center>
-      <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="323.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label fx:id="txtFimDoJogo" text="Jogador Venceu!" textAlignment="CENTER" textFill="#ffaa00" visible="false">
-               <font>
-                  <Font name="Segoe Print Bold" size="32.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="50.0" />
-               </VBox.margin>
-            </Label>
-            <Label fx:id="txtPalavra" text="_ _ _ _ _ _  _ _ _ _ _ _ " textAlignment="CENTER" textFill="WHITE" wrapText="true">
-               <font>
-                  <Font name="Segoe Print Bold" size="26.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="80.0" />
-               </VBox.margin>
-            </Label>
-         </children>
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
-      </VBox>
-   </center>
-   <right>
-      <VBox alignment="CENTER_LEFT" prefHeight="424.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label fx:id="txtPontosJ1" text="J1: 0" textFill="WHITE" wrapText="true">
-               <font>
-                  <Font name="Segoe Print Bold" size="18.0" />
-               </font>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-            </Label>
-            <Label fx:id="txtPontosJ2" text="J2: 0" textFill="WHITE" wrapText="true">
-               <font>
-                  <Font name="Segoe Print Bold" size="18.0" />
-               </font>
-            </Label>
-         </children>
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
-      </VBox>
-   </right>
-   <top>
-      <AnchorPane BorderPane.alignment="CENTER">
-         <children>
-            <Label fx:id="txtRodada" layoutX="14.0" text="Vez de Jogador 1" textFill="WHITE">
-               <font>
-                  <Font name="Segoe Print Bold" size="25.0" />
-               </font>
-            </Label>
-            <Label fx:id="txtDica" layoutX="400.0" text="Dica" textFill="WHITE">
-               <font>
-                  <Font name="Segoe Print Bold" size="25.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
-   </top>
-</BorderPane>
+   </children>
+</StackPane>
