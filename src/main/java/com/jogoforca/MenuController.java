@@ -11,9 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -22,7 +20,7 @@ import java.io.IOException;
 public class MenuController {
 
     // Containers do Menu Inicial e Cadastros
-    @FXML private HBox ctnMenuInicial;
+    @FXML private VBox ctnMenuInicial;
     @FXML private VBox ctnCadastroDoisJogadores;
     @FXML private VBox ctnCadastroUmJogador;
 
@@ -43,6 +41,10 @@ public class MenuController {
     @FXML public void initialize() {
         criarCategorias();
         setDificuldade();
+    }
+
+    @FXML public void onSair() {
+        javafx.application.Platform.exit();
     }
 
     @FXML protected void onClicarUmJogador() {

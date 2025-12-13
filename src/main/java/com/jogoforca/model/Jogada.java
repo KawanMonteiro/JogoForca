@@ -1,6 +1,7 @@
 package com.jogoforca.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 public class Jogada {
@@ -70,7 +71,21 @@ public class Jogada {
     }
 
     public void removerLetra(char letra) {
-        letrasRestantes.remove(Character.valueOf(letra));
+        switch (letra) {
+            case 'A': letrasRestantes.removeAll(Arrays.asList('A', 'Á', 'Â', 'Ã'));
+                break;
+            case 'E': letrasRestantes.removeAll(Arrays.asList('E', 'É', 'Ê'));
+                break;
+            case 'I': letrasRestantes.removeAll(Arrays.asList('I', 'Í', 'Î'));
+                break;
+            case 'O': letrasRestantes.removeAll(Arrays.asList('O', 'Ó', 'Ô', 'Õ'));
+                break;
+            case 'U': letrasRestantes.removeAll(Arrays.asList('U', 'Ú', 'Û'));
+                break;
+            case 'C': letrasRestantes.removeAll(Arrays.asList('C', 'Ç'));
+                break;
+            default: letrasRestantes.remove(Character.valueOf(letra));
+        }
     }
 
     public boolean tentarLetra(char letra) {
@@ -78,10 +93,12 @@ public class Jogada {
         if (letrasUsadas.contains(letra)) {
             throw new IllegalArgumentException("Letra já jogada!");
         }
+
         letrasUsadas.add(letra);
+
         // Verifica se a letra está na palavra
         for (int i = 0; i < palavra.getPalavra().length(); i++) {
-            if (palavra.getPalavra().charAt(i) == letra) return true;
+            if (verificarAcento(palavra.getPalavra().charAt(i)) == letra) return true;
         }
         erros++;
         return false;
