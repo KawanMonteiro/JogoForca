@@ -1,0 +1,28 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="JogoForca:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/JogoForca_jar</output-path>
+    <root id="archive" name="JogoForca.jar">
+      <element id="module-output" name="JogoForca" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/22/javafx-graphics-22-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/22/javafx-fxml-22-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/22/javafx-base-22.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/22/javafx-fxml-22.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/22/javafx-controls-22-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/22/javafx-base-22-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/22/javafx-graphics-22.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/22/javafx-controls-22.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-25.0.1/lib/javafx.base.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-25.0.1/lib/javafx.controls.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-25.0.1/lib/javafx.fxml.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-25.0.1/lib/javafx.graphics.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-25.0.1/lib/javafx.media.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-25.0.1/lib/javafx.properties" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-25.0.1/lib/javafx.swing.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-25.0.1/lib/javafx.web.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-25.0.1/lib/javafx-swt.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-25.0.1/lib/jdk.jsobject.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-25.0.1/lib/jfx.incubator.input.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../../../../Program Files/Java/javafx-sdk-25.0.1/lib/jfx.incubator.richtext.jar" />
+    </root>
+  </artifact>
+</component>

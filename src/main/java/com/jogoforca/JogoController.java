@@ -157,7 +157,11 @@ public class JogoController {
         }
 
         // Escolhe uma letra aleatória da palavra para mostrar
-        char letraEscolhida = letrasRestantes.get(random.nextInt(jogada.getLetrasRestantes().size()));
+        char letraEscolhida;
+        do {
+            letraEscolhida = letrasRestantes.get(random.nextInt(jogada.getLetrasRestantes().size()));
+            letraEscolhida = jogada.verificarAcento(letraEscolhida);
+        } while (letraEscolhida < 'A' || 'Z' < letraEscolhida);
 
         // Procura o botão que corresponde a letra e "clica" nele
         for (Node node: painelTeclado.getChildren()) {
@@ -171,6 +175,7 @@ public class JogoController {
 
         // Aumenta o erro como penalidade e diminui a quantidade de dicas
         jogada.aumentarErros();
+        errosAtuais = jogada.getErros();
         atualizarForca();
         qtdDicas--;
         txtDica.setText("Número de Dicas: " +  qtdDicas);

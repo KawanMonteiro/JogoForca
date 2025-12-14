@@ -54,7 +54,9 @@ public class Jogada {
         StringBuilder palavraOculta = new StringBuilder();
         for (int i = 0; i < tempPalavra.length(); i++) {
             // Adiciona a letra na palavraOculta se estiver na lista de letras usadas
-            if (letrasUsadas.contains(verificarAcento(tempPalavra.charAt(i)))) {
+            if (tempPalavra.charAt(i) == ' ') {
+                palavraOculta.append(" ");
+            } else if (letrasUsadas.contains(verificarAcento(tempPalavra.charAt(i)))) {
                 palavraOculta.append(tempPalavra.charAt(i));
                 palavraOculta.append(" ");
             } else {
@@ -106,7 +108,7 @@ public class Jogada {
 
     public char verificarAcento(char letra) {
         // Verifica se a letra está no alfabeto sem acento
-        if (letra >= 'A' && letra <= 'Z') return letra;
+        if (letra >= 'A' && letra <= 'Z' || letra == ' ' || letra == '-') return letra;
 
         // Verifica qual letra é
         String letrasAcento = "ÁÂÃÉÊÍÎÓÔÕÚÛÇ";
