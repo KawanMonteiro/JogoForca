@@ -23,7 +23,7 @@ public class Computador {
             }
         }
 
-        // Se só faltar uma letra ele sempre acerta
+        // Se faltar apenas uma letra ele sempre acerta
         if (letrasRestantes.size() == 1) {
             return letrasRestantes.getFirst();
         }

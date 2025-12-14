@@ -6,9 +6,9 @@ import java.util.Locale;
 
 public class Jogada {
 
-    final private int limiteErros = 6;
-    private Palavra palavra;
-    private ArrayList<Character> letrasUsadas, letrasRestantes;
+    private final Palavra palavra;
+    private final ArrayList<Character> letrasUsadas;
+    private ArrayList<Character> letrasRestantes;
     private int erros;
 
     public Jogada(Palavra palavra) {
@@ -132,6 +132,7 @@ public class Jogada {
     }
 
     public boolean derrota() {
+        int limiteErros = 6;
         return erros >= limiteErros;
     }
 }

@@ -2,6 +2,7 @@ package com.jogoforca;
 
 import com.jogoforca.model.Computador;
 import com.jogoforca.model.Jogada;
+import com.jogoforca.model.Jogadores;
 import com.jogoforca.model.Palavra;
 import javafx.animation.*;
 import javafx.event.ActionEvent;
@@ -57,20 +58,16 @@ public class JogoController {
     @FXML private AnchorPane ctnFimDeJogo;
 
     // Dados do jogo
+    private Jogada jogada;
+    private Jogadores jogadores;
     private Computador comp;
+
     private boolean modoContraComputador;
-    private String nomeJogador1;
-    private String nomeJogador2;
     private String categoria;
     private String dificuldade;
     private String vezJogador = "";
-    private int pontosJ1 = 0;
-    private int pontosJ2 = 0;
-    private int errosAtuais;
     private int qtdDicas;
-    private Jogada jogada;
     private final List<String> palavras = new ArrayList<>();
-
 
     @FXML public void onReiniciarJogo() {
         rodada();
@@ -78,18 +75,18 @@ public class JogoController {
 
     @FXML public void onTerminarJogo() {
 
-        if (pontosJ1 > pontosJ2) {
-            txtVencedor.setText(nomeJogador1 + " Venceu!");
-        } else if (pontosJ2 > pontosJ1) {
-            txtVencedor.setText(nomeJogador2 + " Venceu!");
+        if (jogadores.getPontosJ1() > jogadores.getPontosJ2()) {
+            txtVencedor.setText(jogadores.getNomeJ1() + " Venceu!");
+        } else if (jogadores.getPontosJ2() > jogadores.getPontosJ1()) {
+            txtVencedor.setText(jogadores.getNomeJ2() + " Venceu!");
         } else {
             txtVencedor.setText("Empate");
         }
 
-        txtFinalJ1.setText(nomeJogador1);
-        txtFinalJ2.setText(nomeJogador2);
-        txtPontosFinaisJ1.setText((pontosJ1 + " Pontos"));
-        txtPontosFinaisJ2.setText((pontosJ2 + " Pontos"));
+        txtFinalJ1.setText(jogadores.getNomeJ1());
+        txtFinalJ2.setText(jogadores.getNomeJ2());
+        txtPontosFinaisJ1.setText((jogadores.getPontosJ1() + " Pontos"));
+        txtPontosFinaisJ2.setText((jogadores.getPontosJ2() + " Pontos"));
 
         // Animação
         ctnFimDeJogo.setVisible(true);
@@ -175,7 +172,6 @@ public class JogoController {
 
         // Aumenta o erro como penalidade e diminui a quantidade de dicas
         jogada.aumentarErros();
-        errosAtuais = jogada.getErros();
         atualizarForca();
         qtdDicas--;
         txtDica.setText("Número de Dicas: " +  qtdDicas);
@@ -188,16 +184,16 @@ public class JogoController {
 
     // Recebe os nomes dos jogadores do MenuController
     public void setJogadores(String j1, String j2, String categoria, String dificuldade) {
-        this.nomeJogador1 = j1.trim().toUpperCase();
         this.categoria = categoria.trim().toUpperCase();
 
-        if (j2 == null) {
-            this.nomeJogador2 = "COMP";
+        if (dificuldade != null) {
             this.modoContraComputador = true;
+
             this.dificuldade = dificuldade.trim().toUpperCase();
+            jogadores = new Jogadores(j1, "COMP");
             this.comp = new Computador(this.dificuldade);
         } else {
-            this.nomeJogador2 = j2.trim().toUpperCase();
+            jogadores = new Jogadores(j1, j2);
             this.modoContraComputador = false;
         }
         rodada();
@@ -235,14 +231,14 @@ public class JogoController {
             btnDica.setDisable(false);
         }
 
-        if (vezJogador.equals(nomeJogador2) || vezJogador.isEmpty()) {
-            vezJogador = nomeJogador1;
+        if (vezJogador.equals(jogadores.getNomeJ2()) || vezJogador.isEmpty()) {
+            vezJogador = jogadores.getNomeJ1();
 
             if (modoContraComputador) {
                 painelTeclado.setDisable(false);
             }
         } else {
-            vezJogador = nomeJogador2;
+            vezJogador = jogadores.getNomeJ2();
 
             if (modoContraComputador) {
                 jogadaComputador();
@@ -254,11 +250,10 @@ public class JogoController {
 
         txtLetrasUsadas.setText("");
         txtDica.setText("Número de Dicas: " +  qtdDicas);
-        txtPontosJ1.setText(nomeJogador1 + ": " + pontosJ1);
-        txtPontosJ2.setText(nomeJogador2 + ": " + pontosJ2);
+        txtPontosJ1.setText(jogadores.getNomeJ1() + ": " + jogadores.getPontosJ1());
+        txtPontosJ2.setText(jogadores.getNomeJ2() + ": " + jogadores.getPontosJ2());
         txtRodada.setText("Vez de " + vezJogador);
 
-        errosAtuais = jogada.getErros();
         txtCategoria.setText(jogada.getPalavra().getCategoria());
         txtPalavra.setText(jogada.getPalavraOculta());
         atualizarForca();
@@ -269,14 +264,14 @@ public class JogoController {
     private void atualizarForca() {
         try {
             // Busca o nome da imagem correspondente ao número de erros
-            String nomeImagem = "/img/forca" + errosAtuais + ".png";
+            String nomeImagem = "/img/forca" + jogada.getErros() + ".png";
             // Irá procurar pela imagem no resource da classe atual
             InputStream imgStream = JogoController.class.getResourceAsStream(nomeImagem);
 
             if (imgStream != null) {
                 Image imagem = new Image(imgStream);
 
-                if (errosAtuais == 0) {
+                if (jogada.getErros() == 0) {
                     imgBase.setImage(null);
                     imgForca.setImage(imagem);
                     imgForca.setClip(null);
@@ -355,18 +350,17 @@ public class JogoController {
                     }
 
                     // Desativa o teclado de novo para o jogador não jogar na vez do COMP
-                    if (modoContraComputador && vezJogador.equals(nomeJogador2)) {
+                    if (modoContraComputador && vezJogador.equals(jogadores.getNomeJ2())) {
                         painelTeclado.setDisable(true);
                     }
 
                     // Atualiza a pontuação
                     if (jogada.vitoria()) {
-                        if (vezJogador.equals(nomeJogador1)) {
-                            pontosJ1++;
-                            txtPontosJ1.setText((nomeJogador1 + ": " + pontosJ1));
+                        jogadores.aumentarPontos(vezJogador);
+                        if (vezJogador.equals(jogadores.getNomeJ1())) {
+                            txtPontosJ1.setText((jogadores.getNomeJ1() + ": " + jogadores.getPontosJ1()));
                         } else {
-                            pontosJ2++;
-                            txtPontosJ2.setText((nomeJogador2 + ": " + pontosJ2));
+                            txtPontosJ2.setText((jogadores.getNomeJ2() + ": " + jogadores.getPontosJ2()));
                         }
                         // Mostra a mensagem de vitória
                         txtFimDoJogo.setText(vezJogador + " acertou!");
@@ -374,11 +368,10 @@ public class JogoController {
                         // Troca o teclado pelos botões para o fim de rodada
                         painelTeclado.setVisible(false);
                         ctnFimDeRodada.setVisible(true);
-                    } else if (modoContraComputador && vezJogador.equals(nomeJogador2)) {
+                    } else if (modoContraComputador && vezJogador.equals(jogadores.getNomeJ2())) {
                         jogadaComputador();
                     }
                 } else {
-                    errosAtuais = jogada.getErros();
                     atualizarForca();
 
                     if (jogada.derrota()) {
@@ -392,15 +385,15 @@ public class JogoController {
                         ctnFimDeRodada.setVisible(true);
                     }
                     // Muda a vez dos jogadores
-                    if (vezJogador.equals(nomeJogador1)) {
-                        vezJogador = nomeJogador2;
+                    if (vezJogador.equals(jogadores.getNomeJ1())) {
+                        vezJogador = jogadores.getNomeJ2();
 
                         // Manda o computador jogar na vez dele
                         if (modoContraComputador && !jogada.derrota()) {
                             jogadaComputador();
                         }
                     } else {
-                        vezJogador = nomeJogador1;
+                        vezJogador = jogadores.getNomeJ1();
 
                         // Desbloqueia o teclado caso o computador tenha errado
                         if (modoContraComputador) {
