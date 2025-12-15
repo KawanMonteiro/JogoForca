@@ -3,12 +3,14 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
 <StackPane style="-fx-background-color: #145924;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jogoforca.JogoController">
@@ -71,7 +73,7 @@
                   </Label>
                   <Label fx:id="txtPalavra" text="_ _ _ _ _ _  _ _ _ _ _ _ " textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
-                        <Font name="Segoe Print Bold" size="26.0" />
+                        <Font name="Segoe Print Bold" size="20.0" />
                      </font>
                      <VBox.margin>
                         <Insets bottom="80.0" />
@@ -86,22 +88,32 @@
          <right>
             <VBox alignment="CENTER_LEFT" prefHeight="424.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="btnDica" mnemonicParsing="false" onAction="#onDica" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: transparent; -fx-background-radius: 30; -fx-border-color: white; -fx-border-radius: 30; -fx-border-width: 3;" text="D" textAlignment="CENTER" textFill="WHITE">
-                     <font>
-                        <Font name="Segoe Print Bold" size="18.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets bottom="10.0" left="75.0" />
-                     </VBox.margin>
-                  </Button>
-                  <Label fx:id="txtDica" text="Número de Dicas: 0" textFill="WHITE">
+                  <Label fx:id="txtDica" text="Dicas: 0" textFill="WHITE">
                      <padding>
-                        <Insets bottom="80.0" />
+                        <Insets bottom="10.0" />
                      </padding>
                      <font>
                         <Font name="Segoe Print Bold" size="18.0" />
                      </font>
+                     <VBox.margin>
+                        <Insets left="63.0" />
+                     </VBox.margin>
                   </Label>
+                  <Button fx:id="btnDica" maxHeight="70.0" maxWidth="70.0" minHeight="70.0" minWidth="70.0" mnemonicParsing="false" onAction="#onDica" prefHeight="70.0" prefWidth="70.0" style="-fx-background-color: transparent; -fx-background-radius: 30; -fx-border-color: white; -fx-border-radius: 20; -fx-border-width: 3;" text="D" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe Print Bold" size="28.0" />
+                     </font>>
+                     <VBox.margin>
+                        <Insets bottom="80.0" left="65.0" />
+                     </VBox.margin>
+                     <effect>
+                        <DropShadow blurType="GAUSSIAN" height="7.0" radius="3.0" width="7.0">
+                           <color>
+                              <Color red="1.0" green="1.0" blue="1.0" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                  </Button>
                   <Label fx:id="txtPontosJ1" text="J1: 0" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="Segoe Print Bold" size="18.0" />
@@ -148,28 +160,38 @@
                   <Font name="Segoe Print Bold" size="50.0" />
                </font>
             </Label>
-            <VBox alignment="TOP_CENTER" layoutX="170.0" layoutY="185.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="185.0">
+            <VBox layoutX="170.0" layoutY="185.0" maxHeight="300.0" maxWidth="340.0" minHeight="300.0" minWidth="340.0" prefHeight="300.0" prefWidth="340.0" spacing="15.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="185.0">
                <children>
-                  <Label fx:id="txtFinalJ1" text="J1" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Label fx:id="txtFinalJ1" text="J1: 0 Pontos" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="Segoe Print Bold" size="30.0" />
                      </font>
                   </Label>
-                  <Label fx:id="txtPontosFinaisJ1" text="0" textFill="WHITE">
+                  <Label fx:id="txtAcertosLetrasJ1" text="Letras Acertadas: 0" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="Segoe Print Bold" size="30.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="txtErrosLetrasJ1" text="Letras Erradas: 0" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="Segoe Print Bold" size="30.0" />
                      </font>
                   </Label>
                </children>
             </VBox>
-            <VBox alignment="TOP_CENTER" layoutX="559.0" layoutY="185.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="185.0">
+            <VBox layoutX="559.0" layoutY="185.0" maxHeight="300.0" maxWidth="340.0" minHeight="300.0" minWidth="340.0" prefHeight="300.0" prefWidth="340.0" spacing="15.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="185.0">
                <children>
-                  <Label fx:id="txtFinalJ2" text="J2" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Label fx:id="txtFinalJ2" text="J2: 0 Pontos" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="Segoe Print Bold" size="30.0" />
                      </font>
                   </Label>
-                  <Label fx:id="txtPontosFinaisJ2" text="0" textFill="WHITE">
+                  <Label fx:id="txtAcertosLetrasJ2" text="Letras Certas: 0" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="Segoe Print Bold" size="30.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="txtErrosLetrasJ2" text="Letras Erradas: 0" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="Segoe Print Bold" size="30.0" />
                      </font>

@@ -38,22 +38,4 @@ public class JogadaTest {
         assertThrows(IllegalArgumentException.class, () ->
                 jogada.verificarAcento('_'));
     }
-
-    @Test
-    void vitoriaTeste() {
-        jogada.tentarLetra('U');
-        jogada.tentarLetra('V');
-        jogada.tentarLetra('A');
-        assertTrue(jogada.vitoria());
-    }
-
-    @Test
-    void derrotaTeste() {
-        char letra = 'B';
-        for (int i = 0; i < 6; i++, letra++) {
-            jogada.tentarLetra(letra);
-        }
-
-        assertTrue(jogada.derrota());
-    }
 }

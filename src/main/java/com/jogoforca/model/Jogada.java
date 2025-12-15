@@ -2,7 +2,6 @@ package com.jogoforca.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 
 public class Jogada {
 
@@ -14,7 +13,6 @@ public class Jogada {
     public Jogada(Palavra palavra) {
         this.palavra = palavra;
         this.letrasUsadas = new ArrayList<>();
-        this.erros = 0;
         setLetras();
     }
 
@@ -44,10 +42,6 @@ public class Jogada {
         return palavra;
     }
 
-    public int getErros() {
-        return erros;
-    }
-
     // Retorna a palavra apenas com a letras que já foram acertadas
     public String getPalavraOculta() {
         String tempPalavra = palavra.getPalavra();
@@ -66,10 +60,6 @@ public class Jogada {
         }
 
         return palavraOculta.toString().toUpperCase().trim();
-    }
-
-    public void aumentarErros() {
-        this.erros++;
     }
 
     public void removerLetra(char letra) {
@@ -102,7 +92,7 @@ public class Jogada {
         for (int i = 0; i < palavra.getPalavra().length(); i++) {
             if (verificarAcento(palavra.getPalavra().charAt(i)) == letra) return true;
         }
-        erros++;
+
         return false;
     }
 
@@ -125,14 +115,5 @@ public class Jogada {
             }
         }
         throw new IllegalArgumentException("Letra desconhecida");
-    }
-
-    public boolean vitoria() {
-        return !getPalavraOculta().contains("_");
-    }
-
-    public boolean derrota() {
-        int limiteErros = 6;
-        return erros >= limiteErros;
     }
 }
