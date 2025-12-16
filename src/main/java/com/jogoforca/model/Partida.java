@@ -10,15 +10,16 @@ import java.util.Scanner;
 @SuppressWarnings("CallToPrintStackTrace")
 public class Partida {
 
+    private static final int LIMITE_ERROS = 6;
     private final Random random = new Random();
     private final List<String> palavras = new ArrayList<>();
     private String categoria;
-    private String dificuldade;
+    private Dificuldade dificuldade;
     private String vezJogador;
     private int qtdDicas, erros;
     private boolean modoContraComputador;
 
-    public Partida(String categoria, String dificuldade) {
+    public Partida(String categoria, Dificuldade dificuldade) {
         setCategoria(categoria);
         setDificuldade(dificuldade);
         setModoContraComputador();
@@ -34,12 +35,12 @@ public class Partida {
         this.categoria = categoria.trim().toUpperCase();
     }
 
-    public String getDificuldade() {
+    public Dificuldade getDificuldade() {
         return dificuldade;
     }
 
-    public void setDificuldade(String dificuldade) {
-        this.dificuldade = dificuldade.trim().toUpperCase();
+    public void setDificuldade(Dificuldade dificuldade) {
+        this.dificuldade = dificuldade;
     }
 
     public String getVezJogador() {
@@ -55,15 +56,20 @@ public class Partida {
     }
 
     public void setQtdDicas() {
+        if (dificuldade == null) {
+            qtdDicas = 1;
+            return;
+        }
+
         switch (dificuldade) {
-            case "FÁCIL":
+            case Dificuldade.FACIL:
                 qtdDicas = 3;
                 break;
-            case "DIFÍCIL":
-                qtdDicas = 0;
-                break;
-            default:
+            case Dificuldade.NORMAL:
                 qtdDicas = 1;
+                break;
+            case Dificuldade.DIFICIL:
+                qtdDicas = 0;
         }
     }
 
@@ -80,7 +86,7 @@ public class Partida {
     }
 
     public void setModoContraComputador() {
-        modoContraComputador = !dificuldade.isBlank();
+        modoContraComputador = !(dificuldade == null);
     }
 
     public void reiniciarPartida() {
@@ -154,6 +160,6 @@ public class Partida {
     }
 
     public boolean derrota() {
-        return erros >= 6;
+        return erros >= LIMITE_ERROS;
     }
 }

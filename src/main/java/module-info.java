@@ -3,6 +3,7 @@ module JogoForca {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
+    requires java.logging;
 
     opens com.jogoforca to javafx.fxml;
     exports com.jogoforca.model;

@@ -128,4 +128,14 @@ public class Jogadores {
             throw new IllegalArgumentException("Jogador inexistente");
         }
     }
+
+    public String getVencedor() {
+        if (getPontosJ1() > getPontosJ2()) {
+            return getNomeJ1() + " Venceu!";
+        } else if (getPontosJ2() > getPontosJ1()) {
+            return getNomeJ2() + " Venceu!";
+        } else {
+            return "Empate";
+        }
+    }
 }

@@ -7,10 +7,10 @@ import java.util.Random;
 public class Computador {
 
     private int acertosConsecutivos = 0;
-    private final String dificuldade;
+    private final Dificuldade dificuldade;
     private final Random random = new Random();
 
-    public Computador(String dificuldade) {
+    public Computador(Dificuldade dificuldade) {
         this.dificuldade = dificuldade;
     }
 
@@ -32,7 +32,7 @@ public class Computador {
         // Lógica de acerto dependendo da dificuldade
         int aleatorio = random.nextInt(1, 10);
         switch (dificuldade) {
-            case "FÁCIL":
+            case Dificuldade.FACIL:
                 if (aleatorio <= 8 || acertosConsecutivos > 1) {
                     letraSorteada = alfabetoErro.get(random.nextInt(alfabetoErro.size()));
                     acertosConsecutivos = 0;
@@ -41,7 +41,7 @@ public class Computador {
                     acertosConsecutivos++;
                 }
                 break;
-            case "NORMAL":
+            case Dificuldade.NORMAL:
                 if (aleatorio <= 6 || acertosConsecutivos > 2) {
                     letraSorteada = alfabetoErro.get(random.nextInt(alfabetoErro.size()));
                     acertosConsecutivos = 0;
@@ -50,7 +50,7 @@ public class Computador {
                     acertosConsecutivos++;
                 }
                 break;
-            case "DIFÍCIL":
+            case Dificuldade.DIFICIL:
                 if (aleatorio <= 3 || acertosConsecutivos > 4) {
                     letraSorteada = alfabetoErro.get(random.nextInt(alfabetoErro.size()));
                     acertosConsecutivos = 0;

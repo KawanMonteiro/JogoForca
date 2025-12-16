@@ -1,13 +1,13 @@
 package com.jogoforca;
 
 import com.jogoforca.model.*;
+import com.jogoforca.view.ForcaView;
+import com.jogoforca.view.TransicoesTela;
 import javafx.animation.*;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -15,17 +15,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.logging.Logger;
 
-@SuppressWarnings("CallToPrintStackTrace")
+
 public class JogoController {
 
-    private final Random random = new Random();
+    private static final Logger logger = Logger.getLogger(JogoController.class.getName());
 
     // FXML do jogo
     @FXML private ImageView imgForca;
@@ -37,7 +34,7 @@ public class JogoController {
     @FXML private Label txtDica;
     @FXML private Label txtPontosJ1;
     @FXML private Label txtPontosJ2;
-    @FXML private Label txtFimDoJogo;
+    @FXML private Label txtFimDaRodada;
     @FXML private Button btnDica;
     @FXML private BorderPane ctnJogo;
     @FXML private FlowPane painelTeclado;
@@ -53,31 +50,31 @@ public class JogoController {
     @FXML private Label txtErrosLetrasJ2;
     @FXML private AnchorPane ctnFimDeJogo;
 
+    // Dados de animação
+    private ForcaView forca;
+
     // Dados do jogo
     private Jogada jogada;
     private Jogadores jogadores;
     private Computador comp;
     private Partida partida;
+    private boolean isDica;
 
 
     @FXML public void initialize() {
+        forca = new ForcaView(imgBase, imgForca);
         carregarImgDica();
     }
 
     @FXML public void onReiniciarJogo() {
         partida.reiniciarPartida();
+        forca.atualizar(partida.getErros());
         iniciarPartida();
     }
 
     @FXML public void onTerminarJogo() {
 
-        if (jogadores.getPontosJ1() > jogadores.getPontosJ2()) {
-            txtVencedor.setText(jogadores.getNomeJ1() + " Venceu!");
-        } else if (jogadores.getPontosJ2() > jogadores.getPontosJ1()) {
-            txtVencedor.setText(jogadores.getNomeJ2() + " Venceu!");
-        } else {
-            txtVencedor.setText("Empate");
-        }
+        txtVencedor.setText(jogadores.getVencedor());
 
         txtFinalJ1.setText(jogadores.getNomeJ1() + ": " + jogadores.getPontosJ1());
         txtFinalJ2.setText(jogadores.getNomeJ2() + ": " + jogadores.getPontosJ2());
@@ -86,17 +83,7 @@ public class JogoController {
         txtErrosLetrasJ1.setText("Letras Erradas: " + jogadores.getErrosJ1());
         txtErrosLetrasJ2.setText("Letras Erradas: " + jogadores.getErrosJ2());
 
-        // Animação
-        ctnFimDeJogo.setVisible(true);
-        ctnFimDeJogo.setTranslateX(800);
-
-        TranslateTransition entrada = new TranslateTransition(Duration.millis(375), ctnFimDeJogo);
-        entrada.setToX(0);
-        TranslateTransition saida = new TranslateTransition(Duration.millis(375), ctnJogo);
-        saida.setToX(-800);
-
-        ParallelTransition animacao = new ParallelTransition(entrada, saida);
-        animacao.play();
+        TransicoesTela.trocarTela(ctnJogo, ctnFimDeJogo, 1);
     }
 
     @FXML public void onVoltarMenu(javafx.event.ActionEvent event) {
@@ -107,37 +94,11 @@ public class JogoController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("menu.fxml"));
             Parent raizMenu = fxmlLoader.load();
 
-            // Carrega o menu na esquerda
-            raizMenu.setTranslateX(-800);
-
-            TranslateTransition saidaJogo = animarTrocaCena(event, raizMenu);
-
-            saidaJogo.play();
-
+            TransicoesTela.trocarCena(event, raizMenu, -1);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.severe("Algum erro ocorreu:");
+            logger.severe(e.toString());
         }
-    }
-
-    private TranslateTransition animarTrocaCena(ActionEvent event, Parent raizMenu) {
-        // Pega a tela inteira do menu
-        Node noAtual = (Node) event.getSource();
-        Scene cenaAtual = noAtual.getScene();
-        Parent raizJogo = noAtual.getScene().getRoot();
-
-        // Configura a animação
-        TranslateTransition saidaMenu = new TranslateTransition(Duration.millis(250), raizJogo);
-        saidaMenu.setToX(800);
-        // Troca a cena quando terminar a saida do menu
-        saidaMenu.setOnFinished(_ -> {
-            cenaAtual.setRoot(raizMenu);
-
-            // Animação de entrada da tela do jogo
-            TranslateTransition entradaJogo = new TranslateTransition(Duration.millis(250), raizMenu);
-            entradaJogo.setToX(0);
-            entradaJogo.play();
-        });
-        return saidaMenu;
     }
 
     @FXML public void onFecharJogo() {
@@ -145,46 +106,43 @@ public class JogoController {
     }
 
     @FXML public void onDica() {
-        ArrayList<Character> letrasRestantes = jogada.getLetrasRestantes();
-        // Verifica se falta mais de 1 letra para dar a dica
-        if (letrasRestantes.size() <= 1) {
-            btnDica.setDisable(true);
-        }
-
-        // Escolhe uma letra aleatória da palavra para mostrar
         char letraEscolhida;
         do {
-            letraEscolhida = letrasRestantes.get(random.nextInt(jogada.getLetrasRestantes().size()));
-            letraEscolhida = jogada.verificarAcento(letraEscolhida);
+            letraEscolhida = jogada.verificarAcento(Dica.escolherLetra(jogada.getLetrasRestantes()));
         } while (letraEscolhida < 'A' || 'Z' < letraEscolhida);
+
+        // Aumenta o erro como penalidade e diminui a quantidade de dicas
+        partida.aumentarErros();
+        forca.atualizar(partida.getErros());
+        partida.diminuirDicas();
+        txtDica.setText("Dicas: " +  partida.getQtdDicas());
 
         // Procura o botão que corresponde a letra e "clica" nele
         for (Node node: painelTeclado.getChildren()) {
             if (node instanceof Button btn) {
                 if (btn.getText().equals(String.valueOf(letraEscolhida))) {
+                    isDica = true;
                     btn.fire();
+                    isDica = false;
                     break;
                 }
             }
         }
 
-        // Aumenta o erro como penalidade e diminui a quantidade de dicas
-        partida.aumentarErros();
-        atualizarForca();
-        partida.diminuirDicas();
-        txtDica.setText("Dicas: " +  partida.getQtdDicas());
-
         // Desativa o botão se acabar as dicas, se tiver apenas 1 letra restante ou se faltar 1 erro para a derrota
-        if (partida.getQtdDicas() <= 0 || letrasRestantes.size() <= 1 || partida.getErros() == 5) {
+        boolean semDicasRestantes = partida.getQtdDicas() <= 0;
+        boolean poucasLetrasRestantes = jogada.getLetrasRestantes().size() <= 1;
+        boolean limiteDeErrosAtingido = partida.getErros() == 5;
+        if (semDicasRestantes || poucasLetrasRestantes || limiteDeErrosAtingido) {
             btnDica.setDisable(true);
         }
     }
 
     // Recebe os nomes dos jogadores do MenuController
-    public void setJogadores(String j1, String j2, String categoria, String dificuldade) {
+    public void setJogadores(String j1, String j2, String categoria, Dificuldade dificuldade) {
         partida = new Partida(categoria, dificuldade);
 
-        if (!dificuldade.isBlank()) {
+        if (!(dificuldade == null)) {
             jogadores = new Jogadores(j1, "COMP");
             this.comp = new Computador(partida.getDificuldade());
         } else {
@@ -206,10 +164,10 @@ public class JogoController {
 
         if (partida.isModoContraComputador()) {
             switch (partida.getDificuldade()) {
-                case "FÁCIL", "NORMAL":
+                case Dificuldade.FACIL, Dificuldade.NORMAL:
                     btnDica.setDisable(false);
                     break;
-                case "DIFÍCIL":
+                case Dificuldade.DIFICIL:
                     btnDica.setDisable(true);
                     btnDica.setVisible(false);
                     txtDica.setVisible(false);
@@ -236,7 +194,7 @@ public class JogoController {
         }
 
         ctnFimDeRodada.setVisible(false);
-        txtFimDoJogo.setVisible(false);
+        txtFimDaRodada.setVisible(false);
 
         txtLetrasUsadas.setText("");
         txtDica.setText("Dicas: " +  partida.getQtdDicas());
@@ -246,53 +204,8 @@ public class JogoController {
 
         txtCategoria.setText(jogada.getPalavra().getCategoria());
         txtPalavra.setText(jogada.getPalavraOculta());
-        atualizarForca();
+        forca.atualizar(partida.getErros());
         criarTeclado();
-    }
-
-    // Atualiza a imagem da forca conforme os erros
-    private void atualizarForca() {
-        try {
-            // Busca o nome da imagem correspondente ao número de erros
-            String nomeImagem = "/img/forca" + partida.getErros() + ".png";
-            // Irá procurar pela imagem no resource da classe atual
-            InputStream imgStream = JogoController.class.getResourceAsStream(nomeImagem);
-
-            if (imgStream != null) {
-                Image imagem = new Image(imgStream);
-
-                if (partida.getErros() == 0) {
-                    imgBase.setImage(null);
-                    imgForca.setImage(imagem);
-                    imgForca.setClip(null);
-                } else {
-                    imgBase.setImage(imgForca.getImage());
-                    imgForca.setImage(imagem);
-
-                    // Animação
-                    Rectangle quadro = new Rectangle(0, 0);
-                    imgForca.setClip(quadro);
-
-                    Timeline animacaoDesenho = new Timeline(
-                            new KeyFrame(Duration.ZERO,
-                                    new KeyValue(quadro.widthProperty(), 0),
-                                    new KeyValue(quadro.heightProperty(), 0)
-                            ),
-                            new KeyFrame(Duration.millis(375),
-                                    new KeyValue(quadro.widthProperty(), 250),
-                                    new KeyValue(quadro.heightProperty(), 250)
-                            )
-                    );
-
-                    animacaoDesenho.play();
-                }
-
-            } else {
-                System.out.println("Imagem não encontrada: " + nomeImagem);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     // Cria o teclado para o jogo
@@ -305,17 +218,7 @@ public class JogoController {
             Button btn = new Button(String.valueOf(letra));
             btn.setPrefWidth(50);
             btn.setPrefHeight(50);
-            btn.setStyle(
-                    "-fx-background-color: transparent;" +
-                    "-fx-border-color: white;" +
-                    "-fx-border-width: 3px;" +
-                    "-fx-text-fill: white;" +
-                    "-fx-font-family: 'Segoe Print';" +
-                    "-fx-font-weight: bold;" +
-                    "-fx-font-size: 16px;" +
-                    "-fx-background-radius: 15;" +
-                    "-fx-border-radius: 30;"
-            );
+            btn.getStyleClass().add("btnTeclado");
 
             // Função lambda para quando o botão for clicado
             btn.setOnAction(_ -> {
@@ -330,7 +233,7 @@ public class JogoController {
                 }
 
                 if (acertou) {
-                    jogadores.aumentarAcertos(partida.getVezJogador());
+                    if (!isDica) jogadores.aumentarAcertos(partida.getVezJogador());
                     txtPalavra.setText(jogada.getPalavraOculta());
                     jogada.removerLetra(btn.getText().charAt(0));
 
@@ -356,8 +259,8 @@ public class JogoController {
                             txtPontosJ2.setText((jogadores.getNomeJ2() + ": " + jogadores.getPontosJ2()));
                         }
                         // Mostra a mensagem de vitória
-                        txtFimDoJogo.setText(partida.getVezJogador() + " acertou!");
-                        txtFimDoJogo.setVisible(true);
+                        txtFimDaRodada.setText(partida.getVezJogador() + " acertou!");
+                        txtFimDaRodada.setVisible(true);
                         // Troca o teclado pelos botões para o fim de rodada
                         painelTeclado.setVisible(false);
                         ctnFimDeRodada.setVisible(true);
@@ -368,11 +271,11 @@ public class JogoController {
                 } else {
                     jogadores.aumentarErros(partida.getVezJogador());
                     partida.aumentarErros();
-                    atualizarForca();
+                    forca.atualizar(partida.getErros());
 
                     if (partida.derrota()) {
-                        txtFimDoJogo.setText("Ninguém venceu!");
-                        txtFimDoJogo.setVisible(true);
+                        txtFimDaRodada.setText("Ninguém venceu!");
+                        txtFimDaRodada.setVisible(true);
                         // Mostra a palavra
                         txtPalavra.setText(jogada.getPalavra().getPalavra());
 
@@ -398,6 +301,10 @@ public class JogoController {
                             painelTeclado.setDisable(false);
                         }
                     }
+
+                    // Desativa a dica se faltar apenas um erro para a derrota
+                    if (partida.getErros() == 5) btnDica.setDisable(true);
+
                     txtRodada.setText("Vez de " + partida.getVezJogador());
                 }
             });
@@ -433,21 +340,15 @@ public class JogoController {
     }
 
     private void carregarImgDica() {
-        try {
-            InputStream imgStream = JogoController.class.getResourceAsStream("/img/imgBtnDica.png");
+        // Adiciona o estilo que está no css
+        btnDica.getStyleClass().add("btnDica");
 
-            if (imgStream != null) {
-                Image img = new Image(imgStream);
-                ImageView imgView = new ImageView(img);
-                imgView.setFitHeight(58);
-                imgView.setFitWidth(70);
-                btnDica.setText("");
-                btnDica.setGraphic(imgView);
-            } else {
-                System.out.println("Imagem não encontrada");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Carrega a imagem e a implementa no botão
+        Image img = Dica.getImagem();
+        ImageView imgView = new ImageView(img);
+        imgView.setFitHeight(58);
+        imgView.setFitWidth(70);
+        btnDica.setText("");
+        btnDica.setGraphic(imgView);
     }
 }

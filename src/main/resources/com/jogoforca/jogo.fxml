@@ -3,17 +3,15 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<StackPane style="-fx-background-color: #145924;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jogoforca.JogoController">
+<StackPane style="-fx-background-color: #145924;" stylesheets="@../../css/estilo.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jogoforca.JogoController">
    <children>
       <BorderPane fx:id="ctnJogo" maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #145924;">
          <left>
@@ -37,12 +35,12 @@
                   </FlowPane>
                   <AnchorPane fx:id="ctnFimDeRodada" layoutX="140.0" layoutY="33.0" visible="false">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#onReiniciarJogo" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Próxima Rodada" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                        <Button mnemonicParsing="false" onAction="#onReiniciarJogo" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-width: 3; -fx-border-radius: 25;" text="Próxima Rodada" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                            <font>
                               <Font name="Segoe Print Bold" size="20.0" />
                            </font>
                         </Button>
-                        <Button layoutX="300.0" mnemonicParsing="false" onAction="#onTerminarJogo" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Terminar Jogo" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                        <Button layoutX="300.0" mnemonicParsing="false" onAction="#onTerminarJogo" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-width: 3; -fx-border-radius: 25;" text="Terminar Jogo" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                            <font>
                               <Font name="Segoe Print Bold" size="20.0" />
                            </font>
@@ -63,7 +61,7 @@
                         <Font name="Segoe Print Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label fx:id="txtFimDoJogo" alignment="CENTER" prefHeight="57.0" prefWidth="300.0" text="Jogador Venceu!" textAlignment="CENTER" textFill="#ffaa00" visible="false" wrapText="true">
+                  <Label fx:id="txtFimDaRodada" alignment="CENTER" prefHeight="57.0" prefWidth="300.0" text="Jogador Venceu!" textAlignment="CENTER" textFill="#ffaa00" visible="false" wrapText="true">
                      <font>
                         <Font name="Segoe Print Bold" size="32.0" />
                      </font>
@@ -99,20 +97,13 @@
                         <Insets left="63.0" />
                      </VBox.margin>
                   </Label>
-                  <Button fx:id="btnDica" maxHeight="70.0" maxWidth="70.0" minHeight="70.0" minWidth="70.0" mnemonicParsing="false" onAction="#onDica" prefHeight="70.0" prefWidth="70.0" style="-fx-background-color: transparent; -fx-background-radius: 30; -fx-border-color: white; -fx-border-radius: 20; -fx-border-width: 3;" text="D" textAlignment="CENTER" textFill="WHITE">
+                  <Button fx:id="btnDica" maxHeight="70.0" maxWidth="70.0" minHeight="70.0" minWidth="70.0" mnemonicParsing="false" onAction="#onDica" prefHeight="70.0" prefWidth="70.0" style="-fx-background-color: transparent; -fx-background-radius: 30; -fx-border-width: 3;" text="D" textAlignment="CENTER" textFill="WHITE">
                      <font>
                         <Font name="Segoe Print Bold" size="28.0" />
                      </font>>
                      <VBox.margin>
                         <Insets bottom="80.0" left="65.0" />
                      </VBox.margin>
-                     <effect>
-                        <DropShadow blurType="GAUSSIAN" height="7.0" radius="3.0" width="7.0">
-                           <color>
-                              <Color red="1.0" green="1.0" blue="1.0" />
-                           </color>
-                        </DropShadow>
-                     </effect>
                   </Button>
                   <Label fx:id="txtPontosJ1" text="J1: 0" textFill="WHITE" wrapText="true">
                      <font>
@@ -200,12 +191,12 @@
             </VBox>
             <AnchorPane fx:id="containerFimDeRodada1" layoutX="140.0" layoutY="504.0" AnchorPane.bottomAnchor="32.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#onVoltarMenu" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Menu" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Button mnemonicParsing="false" onAction="#onVoltarMenu" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-width: 3; -fx-border-radius: 25;" text="Menu" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="Segoe Print Bold" size="24.0" />
                      </font>
                   </Button>
-                  <Button layoutX="300.0" mnemonicParsing="false" onAction="#onFecharJogo" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Fechar Jogo" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Button layoutX="300.0" mnemonicParsing="false" onAction="#onFecharJogo" prefHeight="65.0" prefWidth="220.0" style="-fx-background-color: transparent; -fx-border-width: 3; -fx-border-radius: 25;" text="Fechar Jogo" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="Segoe Print Bold" size="24.0" />
                      </font>

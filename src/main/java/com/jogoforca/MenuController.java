@@ -1,23 +1,23 @@
 package com.jogoforca;
 
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
+import com.jogoforca.model.Dificuldade;
+import com.jogoforca.view.TransicoesTela;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
-@SuppressWarnings("CallToPrintStackTrace")
+
 public class MenuController {
+    Logger logger = Logger.getLogger(MenuController.class.getName());
 
     // Containers do Menu Inicial e Cadastros
     @FXML private VBox ctnMenuInicial;
@@ -30,9 +30,9 @@ public class MenuController {
     @FXML private TextField inputJogador;
 
     // Categorias e dificuldade
-    @FXML private ComboBox cbCategorias;
-    @FXML private ComboBox cbCategoriasComp;
-    @FXML private ComboBox cbDificuldade;
+    @FXML private ComboBox<String> cbCategorias;
+    @FXML private ComboBox<String> cbCategoriasComp;
+    @FXML private ComboBox<Dificuldade> cbDificuldade;
 
     // Textos de aviso
     @FXML private Label txtAviso;
@@ -48,19 +48,19 @@ public class MenuController {
     }
 
     @FXML protected void onClicarUmJogador() {
-        animarTroca(ctnMenuInicial, ctnCadastroUmJogador, 1);
+        TransicoesTela.trocarTela(ctnMenuInicial, ctnCadastroUmJogador, 1);
     }
 
     @FXML protected void onClicarDoisJogadores() {
-        animarTroca(ctnMenuInicial, ctnCadastroDoisJogadores, 1);
+        TransicoesTela.trocarTela(ctnMenuInicial, ctnCadastroDoisJogadores, 1);
     }
 
     @FXML protected void onVoltarMenu() {
         Node telaAtual = ctnCadastroUmJogador.isVisible() ? ctnCadastroUmJogador : ctnCadastroDoisJogadores;
-        animarTroca(telaAtual, ctnMenuInicial, -1);
+        TransicoesTela.trocarTela(telaAtual, ctnMenuInicial, -1);
     }
 
-    @FXML protected void onJogarComp(ActionEvent event) throws IOException {
+    @FXML protected void onJogarComp(ActionEvent event) {
         String jogador = inputJogador.getText();
 
         // Muda o texto de aviso e mostra ele
@@ -77,13 +77,13 @@ public class MenuController {
             return;
         }
 
-        String categoria = cbCategoriasComp.getValue().toString();
-        String dificuldade = cbDificuldade.getValue().toString();
+        String categoria = cbCategoriasComp.getValue();
+        Dificuldade dificuldade = cbDificuldade.getValue();
 
         iniciarJogo(event, jogador, null, categoria, dificuldade);
     }
 
-    @FXML protected void onJogar(ActionEvent event) throws IOException {
+    @FXML protected void onJogar(ActionEvent event) {
         String jogador1 = inputJogadorUm.getText();
         String jogador2 = inputJogadorDois.getText();
 
@@ -96,12 +96,12 @@ public class MenuController {
             return;
         }
 
-        String categoria = cbCategorias.getValue().toString();
+        String categoria = cbCategorias.getValue();
 
         iniciarJogo(event, jogador1, jogador2, categoria, null);
     }
 
-    private void iniciarJogo(ActionEvent event, String jogador1, String jogador2, String categoria, String dificuldade) {
+    private void iniciarJogo(ActionEvent event, String jogador1, String jogador2, String categoria, Dificuldade dificuldade) {
         try {
             // Carrega o arquivo do jogo
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("jogo.fxml"));
@@ -111,63 +111,11 @@ public class MenuController {
             JogoController controller = fxmlLoader.getController();
             controller.setJogadores(jogador1, jogador2, categoria, dificuldade);
 
-            // Carrega o jogo na direita
-            raizJogo.setTranslateX(800);
-
-            TranslateTransition saidaMenu = animarTrocaCena(event, raizJogo);
-
-            saidaMenu.play();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            TransicoesTela.trocarCena(event, raizJogo, 1);
+        } catch (IOException e) {
+            logger.severe("Algum erro ocorreu:");
+            logger.severe(e.toString());
         }
-    }
-
-    private TranslateTransition animarTrocaCena(ActionEvent event, Parent raizJogo) {
-        // Pega a tela inteira do menu
-        Node noAtual = (Node) event.getSource();
-        Scene cenaAtual = noAtual.getScene();
-        Parent raizMenu = noAtual.getScene().getRoot();
-
-        // Configura a animação
-        TranslateTransition saidaMenu = new TranslateTransition(Duration.millis(250), raizMenu);
-        saidaMenu.setToX(-800);
-        // Troca a cena quando terminar a saida do menu
-        saidaMenu.setOnFinished(_ -> {
-            cenaAtual.setRoot(raizJogo);
-
-            // Animação de entrada da tela do jogo
-            TranslateTransition entradaJogo = new TranslateTransition(Duration.millis(250), raizJogo);
-            entradaJogo.setToX(0);
-            entradaJogo.play();
-        });
-        return saidaMenu;
-    }
-
-    // Faz a animação entre as trocas de telas
-    private void animarTroca(Node saindo, Node entrando, int direcao) {
-        double largura = 800; // Largura da janela
-
-        // Ajusta a posição inicial da tela que vai entrar
-        entrando.setTranslateX(direcao * largura);
-        entrando.setVisible(true);
-        entrando.setManaged(true);
-
-        // Anima a tela que está saindo
-        TranslateTransition sair = new TranslateTransition(Duration.millis(375), saindo);
-        sair.setToX(-direcao * largura);
-        // Anima a tela que está entrando
-        TranslateTransition entrar = new TranslateTransition(Duration.millis(375), entrando);
-        entrar.setToX(0);
-        // Faz as duas animações ao mesmo tempo
-        ParallelTransition animacao = new ParallelTransition(sair, entrar);
-
-        // "Desativa" a tela que saiu
-        animacao.setOnFinished(e -> {
-            saindo.setVisible(false);
-            saindo.setManaged(false);
-        });
-
-        animacao.play();
     }
 
     private void criarCategorias() {
@@ -176,6 +124,8 @@ public class MenuController {
     }
 
     private void setDificuldade() {
-        cbDificuldade.getItems().addAll("Fácil", "Normal", "Difícil");
+        cbDificuldade.getItems().addAll(
+                Dificuldade.FACIL, Dificuldade.NORMAL, Dificuldade.DIFICIL
+        );
     }
 }

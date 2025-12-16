@@ -9,7 +9,7 @@ public class ComputadorTest {
 
     @Test
     void acertoQuandoFaltarUmaLetra() {
-        Computador pc = new Computador("NORMAL");
+        Computador pc = new Computador(Dificuldade.NORMAL);
         char letra = pc.escolherLetra(List.of('U', 'V'), List.of('A'));
 
         assertEquals('A', letra);
@@ -17,7 +17,7 @@ public class ComputadorTest {
 
     @Test
     void naoRepetirLetra() {
-        Computador pc = new Computador("NORMAL");
+        Computador pc = new Computador(Dificuldade.NORMAL);
         List<Character> usadas = List.of('A', 'B', 'C');
         char letra = pc.escolherLetra(usadas, List.of('E', 'T'));
         assertFalse(usadas.contains(letra));

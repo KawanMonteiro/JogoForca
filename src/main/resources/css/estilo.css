@@ -19,6 +19,10 @@
     -fx-text-fill: white;
 }
 
+.combo-box:hover {
+    -fx-cursor: hand;
+}
+
 /* Para quando a caixa estiver aberta 'juntar' ela com a lista */
 .combo-box:showing {
     -fx-background-radius: 25 25 0 0;
@@ -52,4 +56,44 @@
 .combo-box-popup .list-cell:filled:selected {
     -fx-text-fill: #ffa000;
     -fx-cursor: hand;
+}
+
+.button {
+    -fx-text-fill: white;
+    -fx-border-color: white;
+}
+
+.button:hover {
+    -fx-text-fill: #ffa000;
+    -fx-border-color: #ffa000;
+    -fx-cursor: hand;
+}
+
+/* Os botões do teclado */
+.btnTeclado {
+    -fx-background-color: transparent;
+    -fx-border-color: white;
+    -fx-border-width: 3px;
+    -fx-text-fill: white;
+    -fx-font-family: 'Segoe Print';
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 15;
+    -fx-border-radius: 30;
+}
+
+.btnDica {
+    -fx-border-radius: 50%;
+    -fx-border-style: dashed;
+}
+
+.btnDica:hover {
+    -fx-border-style: none;
+    -fx-border-color: white;
+}
+
+.btnDica:pressed {
+    -fx-border-color: #ffa000;
+    -fx-effect: innershadow(gaussian, #ffa000, 50, 1.0, 0, 0);
+    -fx-background-color: rgba(255, 160, 0, 0.3);
 }

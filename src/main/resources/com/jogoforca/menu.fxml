@@ -31,12 +31,12 @@
                <children>
                   <HBox alignment="CENTER" maxHeight="410.0" maxWidth="800.0" minHeight="410.0" minWidth="800.0" prefHeight="410.0" prefWidth="800.0" spacing="100.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#onClicarUmJogador" prefWidth="300.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-radius: 25; -fx-border-width: 3;" text="1 Jogador" textFill="WHITE">
+                        <Button mnemonicParsing="false" onAction="#onClicarUmJogador" prefWidth="300.0" style="-fx-background-color: transparent; -fx-border-radius: 25; -fx-border-width: 3;" text="1 Jogador" textFill="WHITE">
                            <font>
                               <Font name="Segoe Print" size="39.0" />
                            </font>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#onClicarDoisJogadores" prefWidth="300.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-radius: 25; -fx-border-width: 3;" text="2 Jogadores" textFill="WHITE">
+                        <Button mnemonicParsing="false" onAction="#onClicarDoisJogadores" prefWidth="300.0" style="-fx-background-color: transparent; -fx-border-radius: 25; -fx-border-width: 3;" text="2 Jogadores" textFill="WHITE">
                            <font>
                               <Font name="Segoe Print" size="39.0" />
                            </font>
@@ -51,7 +51,7 @@
                         <Insets bottom="15.0" />
                      </VBox.margin>
                      <children>
-                        <Button mnemonicParsing="false" onAction="#onSair" prefHeight="50.0" prefWidth="89.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Sair" textFill="WHITE">
+                        <Button mnemonicParsing="false" onAction="#onSair" prefHeight="50.0" prefWidth="89.0" style="-fx-background-color: transparent; -fx-border-width: 3; -fx-border-radius: 25;" text="Sair" textFill="WHITE">
                            <font>
                               <Font name="Segoe Print Bold" size="18.0" />
                            </font>
@@ -95,12 +95,12 @@
                      </VBox.margin></ComboBox>
                   <HBox alignment="CENTER" fillHeight="false" prefHeight="80.0" prefWidth="800.0" spacing="575.0">
                      <children>
-                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#onVoltarMenu" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Voltar" textAlignment="CENTER" textFill="WHITE">
+                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#onVoltarMenu" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: transparent; -fx-border-width: 3; -fx-border-radius: 25;" text="Voltar" textAlignment="CENTER" textFill="WHITE">
                            <font>
                               <Font name="Segoe Print Bold" size="18.0" />
                            </font>
                         </Button>
-                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#onJogar" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Jogar" textAlignment="CENTER" textFill="WHITE">
+                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#onJogar" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: transparent; -fx-border-width: 3; -fx-border-radius: 25;" text="Jogar" textAlignment="CENTER" textFill="WHITE">
                            <font>
                               <Font name="Segoe Print Bold" size="18.0" />
                            </font>
@@ -147,12 +147,12 @@
                   </HBox>
                   <HBox alignment="CENTER" fillHeight="false" prefHeight="80.0" prefWidth="800.0" spacing="575.0" VBox.vgrow="NEVER">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#onVoltarMenu" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Voltar" textAlignment="CENTER" textFill="WHITE">
+                        <Button mnemonicParsing="false" onAction="#onVoltarMenu" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: transparent; -fx-border-width: 3; -fx-border-radius: 25;" text="Voltar" textAlignment="CENTER" textFill="WHITE">
                            <font>
                               <Font name="Segoe Print Bold" size="18.0" />
                            </font>
                         </Button>
-                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#onJogarComp" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 25;" text="Jogar" textAlignment="CENTER" textFill="WHITE">
+                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#onJogarComp" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: transparent; -fx-border-width: 3; -fx-border-radius: 25;" text="Jogar" textAlignment="CENTER" textFill="WHITE">
                            <font>
                               <Font name="Segoe Print Bold" size="18.0" />
                            </font>
