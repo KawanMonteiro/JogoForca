@@ -8,7 +8,6 @@ public class Jogada {
     private final Palavra palavra;
     private final ArrayList<Character> letrasUsadas;
     private ArrayList<Character> letrasRestantes;
-    private int erros;
 
     public Jogada(Palavra palavra) {
         this.palavra = palavra;

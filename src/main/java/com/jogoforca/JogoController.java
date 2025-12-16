@@ -54,10 +54,7 @@ public class JogoController {
     private ForcaView forca;
 
     // Dados do jogo
-    private Jogada jogada;
-    private Jogadores jogadores;
-    private Computador comp;
-    private Partida partida;
+    private MotorDeJogo motor;
     private boolean isDica;
 
 
@@ -67,21 +64,22 @@ public class JogoController {
     }
 
     @FXML public void onReiniciarJogo() {
-        partida.reiniciarPartida();
-        forca.atualizar(partida.getErros());
+        motor.getPartida().reiniciarPartida();
+        forca.atualizar(motor.getPartida().getErros());
+        motor.iniciarPartida();
         iniciarPartida();
     }
 
     @FXML public void onTerminarJogo() {
 
-        txtVencedor.setText(jogadores.getVencedor());
+        txtVencedor.setText(motor.getJogadores().getVencedor());
 
-        txtFinalJ1.setText(jogadores.getNomeJ1() + ": " + jogadores.getPontosJ1());
-        txtFinalJ2.setText(jogadores.getNomeJ2() + ": " + jogadores.getPontosJ2());
-        txtAcertosLetrasJ1.setText("Letras Acertadas: " + jogadores.getAcertosJ1());
-        txtAcertosLetrasJ2.setText("Letras Acertadas: " + jogadores.getAcertosJ2());
-        txtErrosLetrasJ1.setText("Letras Erradas: " + jogadores.getErrosJ1());
-        txtErrosLetrasJ2.setText("Letras Erradas: " + jogadores.getErrosJ2());
+        txtFinalJ1.setText(motor.getJogadores().getNomeJ1() + ": " + motor.getJogadores().getPontosJ1());
+        txtFinalJ2.setText(motor.getJogadores().getNomeJ2() + ": " + motor.getJogadores().getPontosJ2());
+        txtAcertosLetrasJ1.setText("Letras Acertadas: " + motor.getJogadores().getAcertosJ1());
+        txtAcertosLetrasJ2.setText("Letras Acertadas: " + motor.getJogadores().getAcertosJ2());
+        txtErrosLetrasJ1.setText("Letras Erradas: " + motor.getJogadores().getErrosJ1());
+        txtErrosLetrasJ2.setText("Letras Erradas: " + motor.getJogadores().getErrosJ2());
 
         TransicoesTela.trocarTela(ctnJogo, ctnFimDeJogo, 1);
     }
@@ -106,16 +104,10 @@ public class JogoController {
     }
 
     @FXML public void onDica() {
-        char letraEscolhida;
-        do {
-            letraEscolhida = jogada.verificarAcento(Dica.escolherLetra(jogada.getLetrasRestantes()));
-        } while (letraEscolhida < 'A' || 'Z' < letraEscolhida);
-
         // Aumenta o erro como penalidade e diminui a quantidade de dicas
-        partida.aumentarErros();
-        forca.atualizar(partida.getErros());
-        partida.diminuirDicas();
-        txtDica.setText("Dicas: " +  partida.getQtdDicas());
+        char letraEscolhida = motor.pegarDica();
+        forca.atualizar(motor.getPartida().getErros());
+        txtDica.setText("Dicas: " +  motor.getPartida().getQtdDicas());
 
         // Procura o botão que corresponde a letra e "clica" nele
         for (Node node: painelTeclado.getChildren()) {
@@ -130,40 +122,24 @@ public class JogoController {
         }
 
         // Desativa o botão se acabar as dicas, se tiver apenas 1 letra restante ou se faltar 1 erro para a derrota
-        boolean semDicasRestantes = partida.getQtdDicas() <= 0;
-        boolean poucasLetrasRestantes = jogada.getLetrasRestantes().size() <= 1;
-        boolean limiteDeErrosAtingido = partida.getErros() == 5;
+        boolean semDicasRestantes = motor.getPartida().getQtdDicas() <= 0;
+        boolean poucasLetrasRestantes = motor.getJogada().getLetrasRestantes().size() <= 1;
+        boolean limiteDeErrosAtingido = motor.getPartida().getErros() == 5;
         if (semDicasRestantes || poucasLetrasRestantes || limiteDeErrosAtingido) {
             btnDica.setDisable(true);
         }
     }
 
     // Recebe os nomes dos jogadores do MenuController
-    public void setJogadores(String j1, String j2, String categoria, Dificuldade dificuldade) {
-        partida = new Partida(categoria, dificuldade);
-
-        if (!(dificuldade == null)) {
-            jogadores = new Jogadores(j1, "COMP");
-            this.comp = new Computador(partida.getDificuldade());
-        } else {
-            jogadores = new Jogadores(j1, j2);
-        }
+    public void setMotor(String j1, String j2, String categoria, Dificuldade dificuldade) {
+        motor = new MotorDeJogo(j1, j2, categoria, dificuldade);
         iniciarPartida();
     }
 
     // Prepara o jogo para cada rodada
     public void iniciarPartida() {
-        partida.carregarPalavras();
-
-        try {
-            jogada = new Jogada(partida.sortearPalavra());
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return;
-        }
-
-        if (partida.isModoContraComputador()) {
-            switch (partida.getDificuldade()) {
+        if (motor.getPartida().isModoContraComputador()) {
+            switch (motor.getPartida().getDificuldade()) {
                 case Dificuldade.FACIL, Dificuldade.NORMAL:
                     btnDica.setDisable(false);
                     break;
@@ -176,18 +152,13 @@ public class JogoController {
             btnDica.setDisable(false);
         }
 
-        if (partida.getVezJogador().equals(jogadores.getNomeJ2())
-                || partida.getVezJogador().isEmpty()) {
-            partida.setVezJogador(jogadores.getNomeJ1());
-
-            if (partida.isModoContraComputador()) {
-                btnDica.setDisable(false);
-                painelTeclado.setDisable(false);
-            }
+        boolean vezJ1 = motor.getPartida().getVezJogador().equals(motor.getJogadores().getNomeJ1());
+        boolean modoComp = motor.getPartida().isModoContraComputador();
+        if (vezJ1 && modoComp) {
+            btnDica.setDisable(false);
+            painelTeclado.setDisable(false);
         } else {
-            partida.setVezJogador(jogadores.getNomeJ2());
-
-            if (partida.isModoContraComputador()) {
+            if (modoComp) {
                 btnDica.setDisable(true);
                 jogadaComputador();
             }
@@ -197,14 +168,14 @@ public class JogoController {
         txtFimDaRodada.setVisible(false);
 
         txtLetrasUsadas.setText("");
-        txtDica.setText("Dicas: " +  partida.getQtdDicas());
-        txtPontosJ1.setText(jogadores.getNomeJ1() + ": " + jogadores.getPontosJ1());
-        txtPontosJ2.setText(jogadores.getNomeJ2() + ": " + jogadores.getPontosJ2());
-        txtRodada.setText("Vez de " + partida.getVezJogador());
+        txtDica.setText("Dicas: " +  motor.getPartida().getQtdDicas());
+        txtPontosJ1.setText(motor.getJogadores().getNomeJ1() + ": " + motor.getJogadores().getPontosJ1());
+        txtPontosJ2.setText(motor.getJogadores().getNomeJ2() + ": " + motor.getJogadores().getPontosJ2());
+        txtRodada.setText("Vez de " + motor.getPartida().getVezJogador());
 
-        txtCategoria.setText(jogada.getPalavra().getCategoria());
-        txtPalavra.setText(jogada.getPalavraOculta());
-        forca.atualizar(partida.getErros());
+        txtCategoria.setText(motor.getJogada().getPalavra().getCategoria());
+        txtPalavra.setText(motor.getJogada().getPalavraOculta());
+        forca.atualizar(motor.getPartida().getErros());
         criarTeclado();
     }
 
@@ -223,89 +194,80 @@ public class JogoController {
             // Função lambda para quando o botão for clicado
             btn.setOnAction(_ -> {
                 btn.setDisable(true);
-                boolean acertou = jogada.tentarLetra(btn.getText().charAt(0));
+                boolean acertou = motor.tentativa(btn.getText().charAt(0), isDica);
 
                 // Atualiza o texta que mostra as letras que já foram jogadas
-                if (jogada.getLetrasUsadas().size() == 1) {
+                if (motor.getJogada().getLetrasUsadas().size() == 1) {
                     txtLetrasUsadas.setText(btn.getText());
                 } else {
                     txtLetrasUsadas.setText(txtLetrasUsadas.getText() + "-" + btn.getText());
                 }
 
+                boolean modoComp = motor.getPartida().isModoContraComputador();
+                boolean vezJ2 = motor.getPartida().getVezJogador().equals(motor.getJogadores().getNomeJ2());
                 if (acertou) {
-                    if (!isDica) jogadores.aumentarAcertos(partida.getVezJogador());
-                    txtPalavra.setText(jogada.getPalavraOculta());
-                    jogada.removerLetra(btn.getText().charAt(0));
+                    txtPalavra.setText(motor.getJogada().getPalavraOculta());
 
                     // Desativa o botão de dica se sobrar apenas 1 letra para adivinhar
-                    if (jogada.getLetrasRestantes().size() <= 1) {
+                    if (motor.getJogada().getLetrasRestantes().size() <= 1) {
                         btnDica.setDisable(true);
                         txtDica.setText("Dicas: 0");
                     }
 
                     // Desativa o teclado de novo para o jogador não jogar na vez do COMP
-                    if (partida.isModoContraComputador() &&
-                            partida.getVezJogador().equals(jogadores.getNomeJ2())) {
+                    if (modoComp && vezJ2) {
                         painelTeclado.setDisable(true);
                     }
 
-                    // Atualiza a pontuação
-                    if (partida.vitoria(jogada.getPalavraOculta())) {
-                        jogadores.aumentarPontos(partida.getVezJogador());
-
-                        if (partida.getVezJogador().equals(jogadores.getNomeJ1())) {
-                            txtPontosJ1.setText((jogadores.getNomeJ1() + ": " + jogadores.getPontosJ1()));
+                    // Atualiza a tela em caso de vitória
+                    if (motor.getPartida().vitoria(motor.getJogada().getPalavraOculta())) {
+                        if (motor.getPartida().getVezJogador().equals(motor.getJogadores().getNomeJ1())) {
+                            txtPontosJ1.setText(
+                                    (motor.getJogadores().getNomeJ1() + ": " + motor.getJogadores().getPontosJ1())
+                            );
                         } else {
-                            txtPontosJ2.setText((jogadores.getNomeJ2() + ": " + jogadores.getPontosJ2()));
+                            txtPontosJ2.setText(
+                                    (motor.getJogadores().getNomeJ2() + ": " + motor.getJogadores().getPontosJ2())
+                            );
                         }
                         // Mostra a mensagem de vitória
-                        txtFimDaRodada.setText(partida.getVezJogador() + " acertou!");
+                        txtFimDaRodada.setText(motor.getPartida().getVezJogador() + " acertou!");
                         txtFimDaRodada.setVisible(true);
                         // Troca o teclado pelos botões para o fim de rodada
                         painelTeclado.setVisible(false);
                         ctnFimDeRodada.setVisible(true);
-                    } else if (partida.isModoContraComputador() &&
-                            partida.getVezJogador().equals(jogadores.getNomeJ2())) {
+                    } else if (modoComp && vezJ2) {
                         jogadaComputador();
                     }
                 } else {
-                    jogadores.aumentarErros(partida.getVezJogador());
-                    partida.aumentarErros();
-                    forca.atualizar(partida.getErros());
+                    forca.atualizar(motor.getPartida().getErros());
 
-                    if (partida.derrota()) {
+                    boolean isDerrota = motor.getPartida().derrota();
+                    if (isDerrota) {
                         txtFimDaRodada.setText("Ninguém venceu!");
                         txtFimDaRodada.setVisible(true);
                         // Mostra a palavra
-                        txtPalavra.setText(jogada.getPalavra().getPalavra());
+                        txtPalavra.setText(motor.getJogada().getPalavra().getPalavra());
 
                         btnDica.setDisable(true);
                         painelTeclado.setVisible(false);
                         ctnFimDeRodada.setVisible(true);
                     }
-                    // Muda a vez dos jogadores
-                    if (partida.getVezJogador().equals(jogadores.getNomeJ1())) {
-                        partida.setVezJogador(jogadores.getNomeJ2());
 
-                        // Manda o computador jogar na vez dele
-                        if (partida.isModoContraComputador() && !partida.derrota()) {
-                            btnDica.setDisable(true);
-                            jogadaComputador();
-                        }
-                    } else {
-                        partida.setVezJogador(jogadores.getNomeJ1());
-
+                    // Manda o computador jogar na vez dele
+                    if (vezJ2 && modoComp && !isDerrota) {
+                        btnDica.setDisable(true);
+                        jogadaComputador();
+                    } else if (modoComp && !isDerrota) {
                         // Desbloqueia o teclado caso o computador tenha errado
-                        if (partida.isModoContraComputador()) {
-                            btnDica.setDisable(false);
-                            painelTeclado.setDisable(false);
-                        }
+                        btnDica.setDisable(false);
+                        painelTeclado.setDisable(false);
                     }
 
                     // Desativa a dica se faltar apenas um erro para a derrota
-                    if (partida.getErros() == 5) btnDica.setDisable(true);
+                    if (motor.getPartida().getErros() == 5) btnDica.setDisable(true);
 
-                    txtRodada.setText("Vez de " + partida.getVezJogador());
+                    txtRodada.setText("Vez de " + motor.getPartida().getVezJogador());
                 }
             });
 
@@ -322,8 +284,8 @@ public class JogoController {
         PauseTransition pausa = new PauseTransition(Duration.seconds(2));
         pausa.setOnFinished(_ -> {
             // Computador escolhe a letra
-            char letra = comp.escolherLetra(jogada.getLetrasUsadas(), jogada.getLetrasRestantes());
-            letra = jogada.verificarAcento(letra);
+            char letra = motor.getComp().escolherLetra(motor.getJogada().getLetrasUsadas(), motor.getJogada().getLetrasRestantes());
+            letra = motor.getJogada().verificarAcento(letra);
             // Clica no botão da letra escolhida
             for (Node node : painelTeclado.getChildren()) {
                 if (node instanceof Button btn) {

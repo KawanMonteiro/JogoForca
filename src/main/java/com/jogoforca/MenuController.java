@@ -109,7 +109,7 @@ public class MenuController {
 
             // Carrega o controlador da partida
             JogoController controller = fxmlLoader.getController();
-            controller.setJogadores(jogador1, jogador2, categoria, dificuldade);
+            controller.setMotor(jogador1, jogador2, categoria, dificuldade);
 
             TransicoesTela.trocarCena(event, raizJogo, 1);
         } catch (IOException e) {
