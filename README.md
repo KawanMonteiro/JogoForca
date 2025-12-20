@@ -5,6 +5,11 @@ Um jogo da forca moderno e interativo desenvolvido como projeto final de uma dis
 ![Badge Concluído](http://img.shields.io/static/v1?label=STATUS&message=CONCLUÍDO&color=GREEN&style=for-the-badge)
 
 ## 📸 Screenshots
+<div align="center">
+  <img src="src/main/resources/img/GameMenu.png" alt="Tela Inicial" width="400"/>
+  <img src="src/main/resources/img/Gameplay.png" alt="Jogo em Ação" width="400"/>
+  <img src="src/main/resources/img/EndGame.png" alt="Jogo em Ação" width="400"/>
+</div>
 
 ## ✨ Funcionalidades
 
